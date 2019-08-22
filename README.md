@@ -12,8 +12,13 @@ https://reactjs.org/
 ## Firebase
 
 I will be using Firebase still as a backend to authenticate users, store data, and more.
-My big goal here is to use more functions with Firebase and use the node express tools more rather than using it all as is. Before with Firebsae, I used the bare minimum and didn't use the function tools at all.
+My big goal here is to use more functions with Firebase and use the node express tools more rather than using it all as is. Before with Firebsae, I used the bare minimum and didn't use the function tools at all. This time I am using the functions a lot more paired with Express Node.js to help with the requests. I am also using Postman to test my requests and making sure they work the way I am intending. 
+
+https://expressjs.com/
+
 https://firebase.google.com/
+
+https://www.getpostman.com/products
 
 https://css-tricks.com/intro-firebase-react/
 
@@ -25,10 +30,10 @@ https://redux.js.org/
 ## Mobile App
 
 For my capstone we made this application in Flutter which is a cross-platform (ios and Android) mobile app framework. 
-With this thime being in React we are making it mostly for the web, or are we? There are a lot of tools to use to go from website to mobile app, so I have heard. Explained here, https://hackernoon.com/web-apps-turn-website-into-mobile-app-your-four-best-options-78fcb2277be8 are a few options.
+With this time being in React we are making it mostly for the web, or are we? There are a lot of tools to use to go from website to mobile app, so I have heard. Explained here, https://hackernoon.com/web-apps-turn-website-into-mobile-app-your-four-best-options-78fcb2277be8 are a few options.
 
 ### Web Based App
-It can just be a website that is extremely optomized for mobile apps
+It can just be a website that is extremely optomized for mobile apps. The only problem I see with this is that with the mobile Flutter app we were able to keep the hikes lists offline. So if you were offline you could still see all the hikes that you have done and were going to do. You could even add a hike and it would be pushed to the database later.
 
 ### Apache Cordova Wrapper
 This is a program that takes websites and makes them into mobile apps, can be a really good option as well
