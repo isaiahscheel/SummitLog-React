@@ -1,10 +1,20 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
+const app = require('express')();
 
 admin.initializeApp();
+var firebaseConfig = {
+    apiKey: "AIzaSyAD5NMpc6_F2rNBHVylscsvYrfemXSKlrY",
+    authDomain: "summitlog-react.firebaseapp.com",
+    databaseURL: "https://summitlog-react.firebaseio.com",
+    projectId: "summitlog-react",
+    storageBucket: "summitlog-react.appspot.com",
+    messagingSenderId: "779922633606",
+    appId: "1:779922633606:web:af7a9fec4432e831"
+  };
 
-const express = require('express');
-const app = express();
+const firebase = require('firebase');
+firebase.initializeApp(firebaseConfig);
 
 app.get('/hikes', (req, res) => {
     admin
@@ -47,4 +57,24 @@ app.post('/hike', (req, res) => {
         })
 });
 
+app.post('/signup', (req,res) => {
+    const newUser = {
+        email: req.body.email,
+        password: req.body.password,
+        confirmPassword: req.body.confirmPassword,
+        handle: req.body.handle,
+    };
+    //TODO: Validate data
+
+    firebase.auth().createUserWithEmailAndPassword(newUser.email, newUser.password)
+        .then((data) => {
+                return res
+                .status(201)
+                .json({message: `user ${data.user.uid} signed up successfully`}); 
+            })
+            .catch((err) => {
+                console.error(err);
+                return res.status(500).json({error: err.code});
+            });
+});
 exports.api = functions.https.onRequest(app);
