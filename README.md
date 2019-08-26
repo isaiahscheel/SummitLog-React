@@ -52,3 +52,21 @@ https://facebook.github.io/react-native/
 ## SummitLog
 So what is Summit Log? Summit Log is an application that hikers and adventure seekers store and share hikes they want to do and have done. We allow users to store pictures of those hikes, location, etc. We have an interactive map where we allow the user to look at all the hikes that they have done, and the hikes of people they follow. 
 https://isaiaher.github.io./summitlog
+
+
+## Getting started with this code
+
+- Clone the Repo
+- cd into SummitLog-React
+- Make sure you have node/npm installed
+```
+npm install firebase --Save
+```
+- cd into the functions folder (two deep)
+```
+npm install express --Save
+```
+- Make sure you have firebase CLI installed and sign in
+
+
+
