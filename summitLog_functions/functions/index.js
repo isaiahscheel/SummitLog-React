@@ -21,6 +21,37 @@ firebase.initializeApp(firebaseConfig);
     Firebase object
 */
 const db = admin.firestore();
+
+/*
+    Function to authorize that a request is made by someone who is logged in
+*/
+const FBAuth = (req, res, next) => {
+    let idToken;
+    if(req.headers.authorization && req.headers.authorization.startsWith('Bearer ')){
+        idToken = req.headers.authorization.split('Bearer ')[1];
+    }
+    else{
+        console.error(`No token found`);
+        return res.status(403).json({error: 'Unauthorized'});
+    }
+    admin.auth().verifyIdToken(idToken)
+        .then(decodedToken => {
+            req.user = decodedToken;
+            console.log(decodedToken);
+            return db.collection('users')
+            .where('userId', '==', req.user.uid)
+            .limit(1)
+            .get();
+        })
+        .then(data => {
+            req.user.handle = data.docs[0].data().handle;
+            return next();
+        })
+        .catch(err => {
+            console.error('Error while verifying token ', err);
+            return res.status(403).json(err);
+        })
+}
 /*
     Request to get all the hikes
 */
@@ -46,10 +77,13 @@ app.get('/hikes', (req, res) => {
 /*
     Request to post a hike
 */
-app.post('/hike', (req, res) => {
+app.post('/hike', FBAuth, (req, res) => {
+    if(req.body.body.trim() == ''){
+        return res.status(400).json({body: 'Body must not be empty'});
+    }
     const newHike = {
         body: req.body.body,
-        userHandle: req.body.userHandle,
+        userHandle: req.user.handle,
         createdAt: new Date().toISOString(),
     }
 
@@ -208,7 +242,11 @@ app.post('/login', (req, res) =>{
         })
         .catch(err =>{
             console.error(err);
+            if(err.code === 'auth/wrong-password'){
+                return res.status(403).json({general: 'Wrong email/password.'});
+            } else{
             return res.status(500).json({error: err.code});
+            }
         });
 
 });
