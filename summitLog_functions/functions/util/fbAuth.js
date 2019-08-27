@@ -1,4 +1,4 @@
-const admin = require('./admin');
+const {admin, db} = require('./admin');
 /*
 Firebase Authorization Middle-ware
 Function to authorize that a request is made by someone who is logged in
