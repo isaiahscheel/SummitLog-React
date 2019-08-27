@@ -67,6 +67,7 @@ npm install firebase --Save
 npm install express --Save
 ```
 - Make sure you have firebase CLI installed and sign in
+  - https://firebase.google.com/docs/cli
 
 ## Github
 
