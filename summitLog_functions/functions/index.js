@@ -3,7 +3,7 @@ const app = require('express')(); /* Requiring express */
 
 const FBAuth = require('./util/fbAuth'); /* Firebase Authorization Middle-Ware */
 
-const {getAllHikes, postHike } = require('./handlers/hikes'); /* getAllHikes and postHike Requests */
+const {getAllHikes, postHike, getHike, commentOnHike } = require('./handlers/hikes'); /* getAllHikes and postHike Requests */
 const {signup, login, uploadImage, addUserDetails, getAuthenticatedUser} = require('./handlers/users');/* signup and login Requests */
 
 /*
@@ -42,6 +42,7 @@ app.get('/hike/:hikeId', getHike);
 // TODO: like a hike
 // TODO: unlike a hike
 // TODO: comment on a hike
+app.post('/hike/:hikeId/comment', FBAuth, commentOnHike);
 
 /*
     This exports the requests with Expressjs. Makes them all neat and tidy under one function in the Firebase 

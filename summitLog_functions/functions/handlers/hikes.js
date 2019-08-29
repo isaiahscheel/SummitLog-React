@@ -3,13 +3,13 @@
  * getAllHikes --> Get request, returns all the hikes posted
  * postHike --> Post request, requires a body and a header with the user's token, puts a hike into the firebase database
  */
-const {db} = require('../util/admin');
+const { db } = require('../util/admin');
 
 /*
     Request to get all the hikes
 */
 exports.getAllHikes = (req, res) => {
-        db
+    db
         .collection('hikes')
         .orderBy('createdAt', 'desc')
         .get()
@@ -27,9 +27,9 @@ exports.getAllHikes = (req, res) => {
             });
             return res.json(hikes);
         })
-        .catch( (err) => {
+        .catch((err) => {
             console.error(err);
-            res.status(500).json({error: err.code});
+            res.status(500).json({ error: err.code });
         });
 }
 
@@ -37,8 +37,8 @@ exports.getAllHikes = (req, res) => {
     Request to post a hike
 */
 exports.postHike = (req, res) => {
-    if(req.body.body.trim() == ''){
-        return res.status(400).json({body: 'Body must not be empty'});
+    if (req.body.body.trim() == '') {
+        return res.status(400).json({ body: 'Body must not be empty' });
     }
     const newHike = {
         body: req.body.body,
@@ -57,3 +57,62 @@ exports.postHike = (req, res) => {
             console.error(err);
         })
 }
+
+/**
+ * Request to get a specific Hike
+ */
+exports.getHike = (req, res) => {
+    let hikeData = {};
+    db.doc(`/hikes/${req.params.hikeId}`).get()
+        .then((doc) => {
+            if (!doc.exists) {
+                return res.status(404).json({ error: 'Hike not found' });
+            }
+            hikeData = doc.data();
+            hikeData.hikeId = doc.id;
+            return db.collection('comments').where('hikeId', '==', req.params.hikeId).orderBy('createdAt', 'desc').get();
+        })
+        .then((data) => {
+            hikeData.comments = [];
+            data.forEach((doc) => {
+                hikeData.comments.push(doc.data());
+            });
+            return res.json(hikeData);
+        })
+        .catch((err) => {
+            console.error(err);
+            res.status(500).json({ error: err.code });
+        });
+}
+
+/**
+ * Comment on a specified hike
+ */
+
+ exports.commentOnHike = (req, res) => {
+     if(req.body.body.trim() === ''){
+         return res.status(400).json({error: 'Must not be empty'});
+     }
+     const newComment = {
+         body: req.body.body,
+         createdAt: new Date().toISOString(),
+         hikeId: req.params.hikeId,
+         userHandle: req.user.handle,
+         userImage: req.user.imageUrl
+     };
+
+     db.doc(`/hikes/${req.params.hikeId}`).get()
+        .then(doc => {
+            if(!doc.exists){
+                return res.status(404).json({error: 'Hike not found'});
+            }
+            return db.collection('comments').add(newComment);
+        })
+        .then(() => {
+            res.json(newComment);
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({error: 'Something went wrong'});
+        })
+ }
