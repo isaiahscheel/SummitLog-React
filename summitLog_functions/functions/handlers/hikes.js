@@ -44,18 +44,23 @@ exports.postHike = (req, res) => {
         body: req.body.body,
         userHandle: req.user.handle,
         createdAt: new Date().toISOString(),
+        userImage: req.user.imageUrl,
+        likeCount: 0,
+        commentCount: 0
     }
 
     db
         .collection('hikes')
         .add(newHike)
         .then((doc) => {
-            res.json({ message: `document ${doc.id} created successfully` });
+            const resHike = newHike;
+            resHike.hikeId = doc.id;
+            res.json(resHike);
         })
         .catch((err) => {
             res.status(500).json({ error: 'Something went wrong' });
             console.error(err);
-        })
+        });
 }
 
 /**
@@ -106,6 +111,9 @@ exports.getHike = (req, res) => {
             if(!doc.exists){
                 return res.status(404).json({error: 'Hike not found'});
             }
+            return doc.ref.update({commentCount: doc.data().commentCount + 1});
+        })
+        .then(() => {
             return db.collection('comments').add(newComment);
         })
         .then(() => {
@@ -116,3 +124,145 @@ exports.getHike = (req, res) => {
             res.status(500).json({error: 'Something went wrong'});
         })
  }
+
+ /**
+  * 
+  */
+ exports.likeHike = (req, res) => {
+     const likeDocument = db.collection('likes').where('userHandle', '==', req.user.handle)
+        .where('hikeId', '==', req.params.hikeId).limit(1);
+
+        const hikeDocument = db.doc(`/hikes/${req.params.hikeId}`);
+
+        let hikeData;
+
+        hikeDocument.get()
+            .then((doc) => {
+                if(doc.exists){
+                    hikeData = doc.data();
+                    hikeData.hikeId = doc.id;
+                    return likeDocument.get();
+                }
+                else{
+                    return res.status(404).json({error: 'Hike not found'})
+                }
+            })
+            .then((data) => {
+                if(data.empty){
+                    return db.collection('likes').add({
+                        hikeId: req.params.hikeId,
+                        userHandle: req.user.handle
+                    })
+                    .then(() => {
+                        hikeData.likeCount++;
+                        return hikeDocument.update({likeCount: hikeData.likeCount});
+                    })
+                    .then(() => {
+                        return res.json(hikeData);
+                    })
+                }
+                else{
+                    return res.status(400).json({error: 'Hike already liked'});
+                }
+            })
+            .catch(err => {
+                res.status(500).json({error: err.code});
+            });
+ }
+
+ /**
+  * Unlike a specified hike
+  */
+ exports.unlikeHike = (req, res) => {
+    const likeDocument = db.collection('likes').where('userHandle', '==', req.user.handle)
+    .where('hikeId', '==', req.params.hikeId).limit(1);
+
+    const hikeDocument = db.doc(`/hikes/${req.params.hikeId}`);
+
+    let hikeData;
+
+    hikeDocument.get()
+        .then((doc) => {
+            if(doc.exists){
+                hikeData = doc.data();
+                hikeData.hikeId = doc.id;
+                return likeDocument.get();
+            }
+            else{
+                return res.status(404).json({error: 'Hike not found'})
+            }
+        })
+        .then((data) => {
+            if(data.empty){
+                return res.status(400).json({error: 'Hike not liked'});
+            }
+            else{
+                return db.doc(`/likes/${data.docs[0].id}`).delete()
+                .then(() => {
+                    hikeData.likeCount--;
+                    return hikeDocument.update({likeCount: hikeData.likeCount});
+                })
+                .then(() => {
+                    return res.json(hikeData);
+                });
+            }
+        })
+        .catch(err => {
+            res.status(500).json({error: err.code});
+        });
+ }
+
+exports.deleteHike = (req, res) => {
+   const hikeDocument = db.doc(`/hikes/${req.params.hikeId}`);
+   hikeDocument.get()
+   .then((doc) => {
+       if(doc.exists){
+           if(doc.data().userHandle !== req.user.handle){
+               return res.status(403).json({error: 'Unauthorized'});
+           }
+           return hikeDocument.delete();
+       }
+       else{
+           return res.status(404).json({error: 'Hike not found'})
+       }
+   })
+   .then(() => {
+    db.collection(`likes`).where('hikeId', '==', req.params.hikeId).get()
+    .then((data) => {
+        //if(!data.empty){
+            data.forEach(doc => {
+                doc.ref.delete();
+            });
+        //} 
+    });
+   })
+   .then(() => {
+       res.json({message: 'Hike deleted successfully'});
+   })
+   .catch(err => {
+       console.error(err);
+       return res.status(500).json({error: err.code});
+   })
+
+}
+
+/**
+ *    .then(() => {
+    const likeDocuments = db.doc(`/likes/`).where('hikeId', '==', req.params.HikeId);
+    likeDocuments.get()
+    .then((doc) => {
+        if(doc.exists){
+            if(doc.data().userHandle !== req.user.handle){
+                return res.status(403).json({error: 'Unauthorized'});
+            }
+            hikeDocument.delete();
+        }
+        else{
+            return res.status(404).json({error: 'Hike not found'})
+        }
+    })
+   })
+   .then(() => {
+    db.collection('/comments/').where('hikeId', '==', req.params.HikeId).delete();
+})
+ */
