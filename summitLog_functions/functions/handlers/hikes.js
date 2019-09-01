@@ -105,16 +105,21 @@ exports.getHike = (req, res) => {
          userHandle: req.user.handle,
          userImage: req.user.imageUrl
      };
-
+     let flag = true;
      db.doc(`/hikes/${req.params.hikeId}`).get()
         .then(doc => {
             if(!doc.exists){
+                flag = false;
                 return res.status(404).json({error: 'Hike not found'});
             }
-            return doc.ref.update({commentCount: doc.data().commentCount + 1});
+            else{
+                return doc.ref.update({commentCount: doc.data().commentCount + 1});
+            }
         })
         .then(() => {
-            return db.collection('comments').add(newComment);
+            if(flag){
+                return db.collection('comments').add(newComment);
+            }
         })
         .then(() => {
             res.json(newComment);
@@ -228,6 +233,16 @@ exports.deleteHike = (req, res) => {
    })
    .then(() => {
     db.collection(`likes`).where('hikeId', '==', req.params.hikeId).get()
+    .then((data) => {
+        //if(!data.empty){
+            data.forEach(doc => {
+                doc.ref.delete();
+            });
+        //} 
+    });
+   })
+   .then(() => {
+    db.collection(`comments`).where('hikeId', '==', req.params.hikeId).get()
     .then((data) => {
         //if(!data.empty){
             data.forEach(doc => {

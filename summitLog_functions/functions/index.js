@@ -1,5 +1,6 @@
 const functions = require('firebase-functions'); /* Requiring firebase */
 const app = require('express')(); /* Requiring express */
+const {db} = require('./util/admin');
 
 const FBAuth = require('./util/fbAuth'); /* Firebase Authorization Middle-Ware */
 
@@ -55,6 +56,10 @@ app.delete('/hike/:hikeId/delete', FBAuth, deleteHike);
    Located in functions/handlers/users.js
 */
 app.post('/hike/:hikeId/like', FBAuth, likeHike);
+/*
+   Request to unlike a hike
+   Located in functions/handlers/users.js
+*/
 app.post('/hike/:hikeId/unlike', FBAuth, unlikeHike);
 /*
    Post a comment on a specified hike
@@ -66,3 +71,60 @@ app.post('/hike/:hikeId/comment', FBAuth, commentOnHike);
     This exports the requests with Expressjs. Makes them all neat and tidy under one function in the Firebase 
 */
 exports.api = functions.https.onRequest(app);
+
+exports.createNotificationOnLike = functions.firestore.document('likes/{id}').onCreate((snapshot) => {
+   db.doc(`/hikes/${snapshot.data().hikeId}`).get()
+      .then((doc) => {
+         if(doc.exists){
+            return db.doc(`/notifications/${snapshot.id}`).set({
+               createdAt: new Date().toISOString(),
+               recipient: doc.data().userHandle,
+               sender: snapshot.data().userHandle,
+               type: 'like',
+               read: 'false',
+               hikeId: doc.id
+            });
+         }
+      })
+      .then(() => {
+         return;
+      })
+      .catch(err => {
+         console.log(err);
+         return;
+      })
+});
+
+exports.deleteNotificationOnUnlike = functions.firestore.document('likes/{id}').onDelete((snapshot) => {
+   db.doc(`/notifications/${snapshot.id}`).delete()
+      .then(() => {
+         return;
+      })
+      .catch((err) => {
+         console.log(err);
+         return;
+      })
+});
+
+exports.createNotificationOnComment = functions.firestore.document('comments/{id}').onCreate((snapshot) => {
+   db.doc(`/hikes/${snapchot.data().hikeId}`).get()
+      .then((doc) => {
+         if(doc.exists){
+            return db.doc(`/notifications/${snapshot.id}`).set({
+               createdAt: new Date().toISOString(),
+               recepient: doc.data().userHandle,
+               sender: snapshot.data().userHandle,
+               type: 'comment',
+               read: 'false',
+               hikeId: doc.id
+            });
+         }
+      })
+      .then(() => {
+         return;
+      })
+      .catch(err => {
+         console.log(err);
+         return;
+      })
+});
