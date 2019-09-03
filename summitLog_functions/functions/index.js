@@ -5,7 +5,7 @@ const {db} = require('./util/admin');
 const FBAuth = require('./util/fbAuth'); /* Firebase Authorization Middle-Ware */
 
 const {getAllHikes, postHike, getHike, commentOnHike, likeHike, unlikeHike, deleteHike } = require('./handlers/hikes'); /* getAllHikes and postHike Requests */
-const {signup, login, uploadImage, addUserDetails, getAuthenticatedUser} = require('./handlers/users');/* signup and login Requests */
+const {signup, login, uploadImage, addUserDetails, getAuthenticatedUser, getUserDetails, markNotificationsRead} = require('./handlers/users');/* signup and login Requests */
 
 /*
     Request to get all the hikes
@@ -66,6 +66,16 @@ app.post('/hike/:hikeId/unlike', FBAuth, unlikeHike);
    Located in functions/handlers/hikes.js
 */
 app.post('/hike/:hikeId/comment', FBAuth, commentOnHike);
+/*
+   Get a specified user's data
+   Located in functions/handlers/users.js
+*/
+app.get('/user/:handle', getUserDetails);
+/*
+   Mark a notification read
+   Located in functions/handlers/users.js
+*/
+app.post('/notifications', FBAuth, markNotificationsRead);
 
 /*
     This exports the requests with Expressjs. Makes them all neat and tidy under one function in the Firebase 
@@ -73,9 +83,9 @@ app.post('/hike/:hikeId/comment', FBAuth, commentOnHike);
 exports.api = functions.https.onRequest(app);
 
 exports.createNotificationOnLike = functions.firestore.document('likes/{id}').onCreate((snapshot) => {
-   db.doc(`/hikes/${snapshot.data().hikeId}`).get()
+   return db.doc(`/hikes/${snapshot.data().hikeId}`).get()
       .then((doc) => {
-         if(doc.exists){
+         if(doc.exists && doc.data().userHandle !== snapshot.data().userHandle){
             return db.doc(`/notifications/${snapshot.id}`).set({
                createdAt: new Date().toISOString(),
                recipient: doc.data().userHandle,
@@ -86,20 +96,12 @@ exports.createNotificationOnLike = functions.firestore.document('likes/{id}').on
             });
          }
       })
-      .then(() => {
-         return;
-      })
-      .catch(err => {
-         console.log(err);
-         return;
-      })
+      .catch(err => 
+         console.error(err));
 });
 
 exports.deleteNotificationOnUnlike = functions.firestore.document('likes/{id}').onDelete((snapshot) => {
-   db.doc(`/notifications/${snapshot.id}`).delete()
-      .then(() => {
-         return;
-      })
+   return db.doc(`/notifications/${snapshot.id}`).delete()
       .catch((err) => {
          console.log(err);
          return;
@@ -107,9 +109,9 @@ exports.deleteNotificationOnUnlike = functions.firestore.document('likes/{id}').
 });
 
 exports.createNotificationOnComment = functions.firestore.document('comments/{id}').onCreate((snapshot) => {
-   db.doc(`/hikes/${snapchot.data().hikeId}`).get()
+   return db.doc(`/hikes/${snapshot.data().hikeId}`).get()
       .then((doc) => {
-         if(doc.exists){
+         if(doc.exists && doc.data().userHandle !== snapshot.data().userHandle){
             return db.doc(`/notifications/${snapshot.id}`).set({
                createdAt: new Date().toISOString(),
                recepient: doc.data().userHandle,
@@ -120,11 +122,68 @@ exports.createNotificationOnComment = functions.firestore.document('comments/{id
             });
          }
       })
-      .then(() => {
-         return;
-      })
       .catch(err => {
          console.log(err);
          return;
       })
 });
+
+exports.onUserImageChange = functions
+  .firestore.document('/users/{userId}')
+  .onUpdate((change) => {
+    console.log(change.before.data());
+    console.log(change.after.data());
+    if (change.before.data().imageUrl !== change.after.data().imageUrl) {
+      console.log('image has changed');
+      const batch = db.batch();
+      return db
+        .collection('hikes')
+        .where('userHandle', '==', change.before.data().handle)
+        .get()
+        .then((data) => {
+          data.forEach((doc) => {
+            const scream = db.doc(`/hikes/${doc.id}`);
+            batch.update(scream, { userImage: change.after.data().imageUrl });
+          });
+          return batch.commit();
+        });
+    } else return true;
+  });
+
+  
+   exports.onHikeDelete = functions
+  .firestore.document('/hikes/{hikeId}')
+  .onDelete((snapshot, context) => {
+    const hikeId = context.params.hikeId;
+    const batch = db.batch();
+    return db
+      .collection('comments')
+      .where('hikeId', '==', hikeId)
+      .get()
+      .then((data) => {
+        data.forEach((doc) => {
+          batch.delete(db.doc(`/comments/${doc.id}`));
+        });
+        return db
+          .collection('likes')
+          .where('hikeId', '==', hikeId)
+          .get();
+      })
+      .then((data) => {
+        data.forEach((doc) => {
+          batch.delete(db.doc(`/likes/${doc.id}`));
+        });
+        return db
+          .collection('notifications')
+          .where('hikeId', '==', hikeId)
+          .get();
+      })
+      .then((data) => {
+        data.forEach((doc) => {
+          batch.delete(db.doc(`/notifications/${doc.id}`));
+        });
+        return batch.commit();
+      })
+      .catch((err) => console.error(err));
+  });
+   

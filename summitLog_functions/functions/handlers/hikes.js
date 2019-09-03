@@ -22,7 +22,8 @@ exports.getAllHikes = (req, res) => {
                     userHandle: doc.data().userHandle,
                     createdAt: doc.data().createdAt,
                     commentCount: doc.data().commentCount,
-                    likeCount: doc.data().likeCount
+                    likeCount: doc.data().likeCount,
+                    userImage: doc.data().userImage
                 });
             });
             return res.json(hikes);
@@ -96,7 +97,7 @@ exports.getHike = (req, res) => {
 
  exports.commentOnHike = (req, res) => {
      if(req.body.body.trim() === ''){
-         return res.status(400).json({error: 'Must not be empty'});
+         return res.status(400).json({comment: 'Must not be empty'});
      }
      const newComment = {
          body: req.body.body,
@@ -234,21 +235,25 @@ exports.deleteHike = (req, res) => {
    .then(() => {
     db.collection(`likes`).where('hikeId', '==', req.params.hikeId).get()
     .then((data) => {
-        //if(!data.empty){
             data.forEach(doc => {
                 doc.ref.delete();
             });
-        //} 
     });
    })
    .then(() => {
     db.collection(`comments`).where('hikeId', '==', req.params.hikeId).get()
     .then((data) => {
-        //if(!data.empty){
             data.forEach(doc => {
                 doc.ref.delete();
             });
-        //} 
+    });
+   })
+   .then(() => {
+    db.collection(`notifications`).where('hikeId', '==', req.params.hikeId).get()
+    .then((data) => {
+            data.forEach(doc => {
+                doc.ref.delete();
+            });
     });
    })
    .then(() => {
@@ -260,24 +265,3 @@ exports.deleteHike = (req, res) => {
    })
 
 }
-
-/**
- *    .then(() => {
-    const likeDocuments = db.doc(`/likes/`).where('hikeId', '==', req.params.HikeId);
-    likeDocuments.get()
-    .then((doc) => {
-        if(doc.exists){
-            if(doc.data().userHandle !== req.user.handle){
-                return res.status(403).json({error: 'Unauthorized'});
-            }
-            hikeDocument.delete();
-        }
-        else{
-            return res.status(404).json({error: 'Hike not found'})
-        }
-    })
-   })
-   .then(() => {
-    db.collection('/comments/').where('hikeId', '==', req.params.HikeId).delete();
-})
- */
