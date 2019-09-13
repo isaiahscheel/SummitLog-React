@@ -21,7 +21,7 @@ class home extends Component {
   }
   render() {
     let recentHikes = this.state.hikes ? (
-      this.state.hikes.map(hike => <Hike hike={hike} />)
+      this.state.hikes.map(hike => <Hike key={hike.hikeId} hike={hike} />)
     ) : (
       <p>Loading...</p>
     );
