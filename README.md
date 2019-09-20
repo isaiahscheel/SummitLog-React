@@ -75,14 +75,6 @@ npm install express --Save
 
 - Currently, I do not have any "Tasks" or "Boarding" because it is only me
 
-- Using this video as a huge reference at the time --> https://www.youtube.com/watch?v=m_u6P5k0vP0
-
-- Some notes on it: 
-
-  - He is making a social media website based off of twitter with react and firebase
-  - It is 12 HOURS long
-  - I am following it pretty closely right now, but hope to start incorporating my own ideas once I get the hang of it
-  - Currently (8/27) I am 2.5 hrs in and have soley focused on the backed/API work with Authenticating users, using TokenIds in my requests to make them secure, posting hikes, getting hikes, etc.
 
 
 
