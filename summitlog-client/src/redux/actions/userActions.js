@@ -1,4 +1,3 @@
-//Test
 import {
   SET_USER,
   SET_ERRORS,
