@@ -9,6 +9,12 @@ import jwtDecode from "jwt-decode";
 import AuthRoute from "./util/AuthRoute";
 
 /**
+ * Redux Imports
+ */
+import { Provider } from "react-redux";
+import store from "./redux/store";
+
+/**
  * Import the pages needed
  */
 import home from "./pages/home";
@@ -34,7 +40,7 @@ class App extends Component {
   render() {
     return (
       <MuiThemeProvider theme={theme}>
-        <div className="App">
+        <Provider store={store}>
           <Router>
             <NavBar />
             <div className="container">
@@ -55,7 +61,7 @@ class App extends Component {
               </Switch>
             </div>
           </Router>
-        </div>
+        </Provider>
       </MuiThemeProvider>
     );
   }
