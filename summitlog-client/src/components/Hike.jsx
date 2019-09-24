@@ -9,7 +9,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
  */
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
-import Button from "@material-ui/core/Button";
+//import Button from "@material-ui/core/Button";
 import CardMedia from "@material-ui/core/CardMedia";
 import Typography from "@material-ui/core/Typography";
 
@@ -29,7 +29,7 @@ const styles = {
 
 export class Hike extends Component {
   render() {
-      dayjs.extend(relativeTime);
+    dayjs.extend(relativeTime);
     const {
       classes,
       hike: {
