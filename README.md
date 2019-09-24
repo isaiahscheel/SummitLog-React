@@ -74,5 +74,3 @@ npm install express --Save
 - To see the most up to date code, check out the branches. 
 
 - Currently, I do not have any "Tasks" or "Boarding" because it is only me
-
-- Reference at the time --> https://www.youtube.com/watch?v=m_u6P5k0vP0
