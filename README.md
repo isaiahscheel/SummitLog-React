@@ -75,6 +75,3 @@ npm install express --Save
 
 - Currently, I do not have any "Tasks" or "Boarding" because it is only me
 
-
-
-
