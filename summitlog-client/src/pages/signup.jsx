@@ -73,13 +73,13 @@ class signup extends Component {
               id="email"
               name="email"
               type="email"
-              label="email"
+              label="Efmail"
               className={classes.textField}
               value={this.state.email}
               helperText={errors.email}
               error={errors.email ? true : false}
               onChange={this.handleChange}
-              fullWidth
+              style={{ width: "75%" }}
             />
             <TextField
               id="password"
@@ -91,7 +91,7 @@ class signup extends Component {
               helperText={errors.password}
               error={errors.password ? true : false}
               onChange={this.handleChange}
-              fullWidth
+              style={{ width: "75%" }}
             />
             <TextField
               id="confirmPassword"
@@ -103,7 +103,7 @@ class signup extends Component {
               helperText={errors.confirmPassword}
               error={errors.confirmPassword ? true : false}
               onChange={this.handleChange}
-              fullWidth
+              style={{ width: "75%" }}
             />
             <TextField
               id="handle"
@@ -115,7 +115,7 @@ class signup extends Component {
               helperText={errors.handle}
               error={errors.handle ? true : false}
               onChange={this.handleChange}
-              fullWidth
+              style={{ width: "75%" }}
             />
           </form>
           {errors.general && (

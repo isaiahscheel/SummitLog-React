@@ -11,6 +11,7 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import Fab from "@material-ui/core/Fab";
 import CircularProgress from "@material-ui/core/CircularProgress";
+import Paper from "@material-ui/core/Paper";
 
 import { connect } from "react-redux";
 import { loginUser } from "../redux/actions/userActions";
@@ -67,13 +68,13 @@ class login extends Component {
               id="email"
               name="email"
               type="email"
-              label="email"
+              label="Email"
               className={classes.textField}
               value={this.state.email}
               helperText={errors.email}
               error={errors.email ? true : false}
               onChange={this.handleChange}
-              fullWidth
+              style={{ width: "75%" }}
             />
             <TextField
               id="password"
@@ -85,7 +86,7 @@ class login extends Component {
               helperText={errors.password}
               error={errors.password ? true : false}
               onChange={this.handleChange}
-              fullWidth
+              style={{ width: "75%" }}
             />
           </form>
           {errors.general && (

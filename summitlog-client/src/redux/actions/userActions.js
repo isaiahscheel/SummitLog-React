@@ -79,6 +79,30 @@ export const getUserData = () => dispatch => {
     .catch(err => console.log(err));
 };
 
+export const uploadImage = formData => dispatch => {
+  dispatch({ type: LOADING_USER });
+  Axios.post("/user/image", formData)
+    .then(() => {
+      dispatch(getUserData());
+    })
+    .catch(err => {
+      console.log(err);
+    });
+};
+
+/**
+ * Action to edit User details of their profile
+ *
+ */
+export const editUserDetails = userDetails => dispatch => {
+  dispatch({ type: LOADING_USER });
+  Axios.post("/user", userDetails)
+    .then(() => {
+      dispatch(getUserData());
+    })
+    .catch(err => console.log(err));
+};
+
 /**
  * A helper method to set the headers of an axios request
  * to make sure the request's are secure.

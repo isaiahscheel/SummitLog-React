@@ -3,14 +3,15 @@ import PropTypes from "prop-types";
 import withStyles from "@material-ui/core/styles/withStyles";
 import { Link } from "react-router-dom";
 import dayjs from "dayjs";
-//import EditDetails from "./EditDetails";
-//import MyButton from "../../util/MyButton";
+import ExifOrientationImg from "react-exif-orientation-img";
+import EditDetails from "./EditDetails";
 //import ProfileSkeleton from "../../util/ProfileSkeleton";
 // MUI stuff
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import MuiLink from "@material-ui/core/Link";
 import Paper from "@material-ui/core/Paper";
+import Tooltip from "@material-ui/core/Tooltip";
 // Icons
 import LocationOn from "@material-ui/icons/LocationOn";
 import LinkIcon from "@material-ui/icons/Link";
@@ -19,13 +20,30 @@ import EditIcon from "@material-ui/icons/Edit";
 import KeyboardReturn from "@material-ui/icons/KeyboardReturn";
 //Redux
 import { connect } from "react-redux";
-//import { logoutUser, uploadImage } from "../../redux/actions/userActions";
+import { IconButton } from "@material-ui/core";
+import { logoutUser, uploadImage } from "../redux/actions/userActions";
+import MyButton from "../util/MyButton";
 
 const styles = theme => ({
   ...theme.formStyle
 });
 
 class Profile extends Component {
+  handleImageChange = event => {
+    const image = event.target.files[0];
+    console.log(image);
+    //Send to server
+    const formData = new FormData();
+    formData.append("image", image, image.name);
+    this.props.uploadImage(formData);
+  };
+  handleEditPicture = () => {
+    const fileInput = document.getElementById("imageInput");
+    fileInput.click();
+  };
+  handleLogout = () => {
+    this.props.logoutUser();
+  };
   render() {
     const {
       classes,
@@ -42,7 +60,27 @@ class Profile extends Component {
           <br />
           <div className={classes.profile}>
             <div className="image-wrapper">
-              <img src={imageUrl} className="profile-image" alt="" />
+              {
+                //<img src={imageUrl} className="profile-image" alt="" />
+              }
+              <ExifOrientationImg
+                src={imageUrl}
+                className="profile-image"
+                alt=""
+              />
+              <input
+                type="file"
+                id="imageInput"
+                onChange={this.handleImageChange}
+                hidden="hidden"
+              />
+              <MyButton
+                tip="Edit Picture!"
+                onClick={this.handleEditPicture}
+                btnClassName="button"
+              >
+                <EditIcon color="primary" />
+              </MyButton>
             </div>
             <hr />
             <div className="profile-details">
@@ -78,6 +116,10 @@ class Profile extends Component {
               <p></p>
               <br />
             </div>
+            <MyButton tip="Logout" onClick={this.handleLogout}>
+              <KeyboardReturn color="primary" />
+            </MyButton>
+            <EditDetails />
           </div>
         </Paper>
       ) : (
@@ -117,9 +159,16 @@ const mapStateToProps = state => ({
   user: state.user
 });
 
+const mapActionsToProps = { logoutUser, uploadImage };
+
 Profile.propTypes = {
+  logoutUser: PropTypes.func.isRequired,
+  uploadImage: PropTypes.func.isRequired,
   user: PropTypes.object.isRequired,
   classes: PropTypes.object.isRequired
 };
 
-export default connect(mapStateToProps)(withStyles(styles)(Profile));
+export default connect(
+  mapStateToProps,
+  mapActionsToProps
+)(withStyles(styles)(Profile));
