@@ -29,6 +29,7 @@ const styles = theme => ({
 
 class Profile extends Component {
   handleImageChange = event => {
+    console.log(event.target.files);
     const image = event.target.files[0];
     console.log(image);
     //Send to server

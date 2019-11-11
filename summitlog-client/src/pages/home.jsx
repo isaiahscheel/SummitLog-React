@@ -1,28 +1,22 @@
 import React, { Component } from "react";
 import Grid from "@material-ui/core/Grid";
 import axios from "axios";
+import PropTypes from "prop-types";
 
 import Hike from "../components/Hike";
 import Profile from "../components/Profile";
 
+import { connect } from "react-redux";
+import { getHikes } from "../redux/actions/dataActions";
+
 class home extends Component {
-  state = {
-    hikes: null
-  };
   componentDidMount() {
-    axios
-      .get("/hikes")
-      .then(res => {
-        console.log(res.data);
-        this.setState({
-          hikes: res.data
-        });
-      })
-      .catch(err => console.log(err));
+    this.props.getHikes();
   }
   render() {
-    let recentHikes = this.state.hikes ? (
-      this.state.hikes.map(hike => <Hike key={hike.hikeId} hike={hike} />)
+    const { hikes, loading } = this.props.data;
+    let recentHikes = !loading ? (
+      hikes.map(hike => <Hike key={hike.hikeId} hike={hike} />)
     ) : (
       <p>Loading...</p>
     );
@@ -39,4 +33,16 @@ class home extends Component {
   }
 }
 
-export default home;
+home.propTypes = {
+  getHikes: PropTypes.func.isRequired,
+  data: PropTypes.object.isRequired
+};
+
+const mapStateToProps = state => ({
+  data: state.data
+});
+
+export default connect(
+  mapStateToProps,
+  { getHikes }
+)(home);
