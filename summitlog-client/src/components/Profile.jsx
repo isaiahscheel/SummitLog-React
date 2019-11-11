@@ -20,7 +20,6 @@ import EditIcon from "@material-ui/icons/Edit";
 import KeyboardReturn from "@material-ui/icons/KeyboardReturn";
 //Redux
 import { connect } from "react-redux";
-import { IconButton } from "@material-ui/core";
 import { logoutUser, uploadImage } from "../redux/actions/userActions";
 import MyButton from "../util/MyButton";
 
@@ -30,6 +29,7 @@ const styles = theme => ({
 
 class Profile extends Component {
   handleImageChange = event => {
+    console.log(event.target.files);
     const image = event.target.files[0];
     console.log(image);
     //Send to server
