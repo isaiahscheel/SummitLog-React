@@ -36,19 +36,17 @@ export class Navbar extends Component {
               </Link>
             </Fragment>
           ) : (
-            <HashRouter basename="/">
-              <Fragment>
-                <Button color="inherit" component={Link} to="/login">
-                  Login
-                </Button>
-                <Button color="inherit" component={Link} to="/">
-                  Home
-                </Button>
-                <Button color="inherit" component={Link} to="/signup">
-                  Signup
-                </Button>
-              </Fragment>
-            </HashRouter>
+            <Fragment>
+              <Button color="inherit" component={Link} to="/login">
+                Login
+              </Button>
+              <Button color="inherit" component={Link} to="/">
+                Home
+              </Button>
+              <Button color="inherit" component={Link} to="/signup">
+                Signup
+              </Button>
+            </Fragment>
           )}
         </Toolbar>
       </AppBar>

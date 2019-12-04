@@ -19,7 +19,7 @@ export const getHikes = () => dispatch => {
   console.log("getHikes");
   dispatch({ type: LOADING_DATA });
   axios
-    .get("https://us-central1-summitlog-react.cloudfunctions.net/api/hikes")
+    .get("/hikes")
     .then(res => {
       dispatch({
         type: SET_HIKES,
