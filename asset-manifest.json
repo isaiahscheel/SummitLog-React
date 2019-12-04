@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/SummitLog-React/static/css/main.75be03e8.chunk.css",
+    "main.js": "/SummitLog-React/static/js/main.a9c2ef3b.chunk.js",
+    "main.js.map": "/SummitLog-React/static/js/main.a9c2ef3b.chunk.js.map",
+    "runtime~main.js": "/SummitLog-React/static/js/runtime~main.e6dcf36f.js",
+    "runtime~main.js.map": "/SummitLog-React/static/js/runtime~main.e6dcf36f.js.map",
+    "static/js/2.8b58de8c.chunk.js": "/SummitLog-React/static/js/2.8b58de8c.chunk.js",
+    "static/js/2.8b58de8c.chunk.js.map": "/SummitLog-React/static/js/2.8b58de8c.chunk.js.map",
+    "index.html": "/SummitLog-React/index.html",
+    "precache-manifest.a60aecddf5f41112ebcecef5bb4341cb.js": "/SummitLog-React/precache-manifest.a60aecddf5f41112ebcecef5bb4341cb.js",
+    "service-worker.js": "/SummitLog-React/service-worker.js",
+    "static/css/main.75be03e8.chunk.css.map": "/SummitLog-React/static/css/main.75be03e8.chunk.css.map",
+    "static/media/logo.png": "/SummitLog-React/static/media/logo.391ed446.png"
+  }
+}
