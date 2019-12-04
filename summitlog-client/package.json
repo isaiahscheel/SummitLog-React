@@ -1,6 +1,6 @@
 {
   "name": "summitlog-client",
-  "homepage": "http://isaiaher.github.io/SummitLog-React",
+  "homepage": "https://isaiaher.github.io/SummitLog-React",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -19,12 +19,12 @@
     "redux-thunk": "^2.3.0"
   },
   "scripts": {
-    "start": "PORT=3005 react-scripts start",
+    "start": "react-scripts start",
+    "predeploy": "yarn run build",
+    "deploy": "gh-pages -d build",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"

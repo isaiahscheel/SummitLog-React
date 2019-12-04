@@ -73,7 +73,7 @@ class signup extends Component {
               id="email"
               name="email"
               type="email"
-              label="Efmail"
+              label="Email"
               className={classes.textField}
               value={this.state.email}
               helperText={errors.email}
@@ -158,7 +158,6 @@ const mapStateToProps = state => ({
   UI: state.UI
 });
 
-export default connect(
-  mapStateToProps,
-  { signupUser }
-)(withStyles(styles)(signup));
+export default connect(mapStateToProps, { signupUser })(
+  withStyles(styles)(signup)
+);
