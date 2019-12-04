@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from "react";
-import { Link } from "react-router-dom";
+//import { Link } from "react-router-dom";
+import { HashRouter, Route, Link } from "react-router-dom";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import MyButton from "../util/MyButton";
@@ -35,17 +36,19 @@ export class Navbar extends Component {
               </Link>
             </Fragment>
           ) : (
-            <Fragment>
-              <Button color="inherit" component={Link} to="/login">
-                Login
-              </Button>
-              <Button color="inherit" component={Link} to="/">
-                Home
-              </Button>
-              <Button color="inherit" component={Link} to="/signup">
-                Signup
-              </Button>
-            </Fragment>
+            <HashRouter basename="/">
+              <Fragment>
+                <Button color="inherit" component={Link} to="/login">
+                  Login
+                </Button>
+                <Button color="inherit" component={Link} to="/">
+                  Home
+                </Button>
+                <Button color="inherit" component={Link} to="/signup">
+                  Signup
+                </Button>
+              </Fragment>
+            </HashRouter>
           )}
         </Toolbar>
       </AppBar>
