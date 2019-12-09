@@ -1,5 +1,7 @@
 # SummitLog-React
 
+Found at http://summitlog.s3-website.us-east-2.amazonaws.com/
+
 I am in the process of remaking my capstone project in which we made a hiking app using Flutter.
 
 In this remake I will be using React instead and making some design changes in both the aesthetic and the technical design.
