@@ -14,6 +14,7 @@ class home extends Component {
     this.props.getHikes();
   }
   render() {
+    console.log("Version 1");
     const { hikes, loading } = this.props.data;
     let recentHikes = !loading ? (
       hikes.map(hike => <Hike key={hike.hikeId} hike={hike} />)
@@ -42,7 +43,4 @@ const mapStateToProps = state => ({
   data: state.data
 });
 
-export default connect(
-  mapStateToProps,
-  { getHikes }
-)(home);
+export default connect(mapStateToProps, { getHikes })(home);

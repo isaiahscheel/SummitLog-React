@@ -1,5 +1,7 @@
 # SummitLog-React
 
+Found at http://summitlog.s3-website.us-east-2.amazonaws.com/  (TESTING SITE)
+
 I am in the process of remaking my capstone project in which we made a hiking app using Flutter.
 
 In this remake I will be using React instead and making some design changes in both the aesthetic and the technical design.
@@ -74,7 +76,4 @@ npm install express --Save
 - To see the most up to date code, check out the branches. 
 
 - Currently, I do not have any "Tasks" or "Boarding" because it is only me
-
-
-
 
